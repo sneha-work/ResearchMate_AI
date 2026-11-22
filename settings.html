@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings & Feedback — ResearchMate AI</title>
+  <link rel="stylesheet" href="/static/css/styles.css">
+  <style>
+    .settings-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .rating-stars {
+      display: flex;
+      gap: 8px;
+      margin-top: 6px;
+    }
+    .star-btn {
+      background: none;
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-size: 14px;
+      cursor: pointer;
+      color: var(--text-muted);
+      background: var(--bg-card);
+      transition: all 0.15s ease;
+    }
+    .star-btn.active, .star-btn:hover {
+      background: var(--accent-soft);
+      color: var(--accent);
+      border-color: var(--accent);
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Top Navigation Bar -->
+    <header class="navbar-top">
+      <div class="nav-container">
+        <a href="/" class="brand-link">
+          <span class="brand-name">ResearchMate</span>
+        </a>
+
+        <nav class="nav-links">
+          <a href="/formatter" class="nav-link">Paper Formatter</a>
+          <a href="/notes" class="nav-link">Notes Maker</a>
+          <a href="/literature" class="nav-link">Literature Discovery</a>
+          <a href="/ideas" class="nav-link">Idea Lab</a>
+          <a href="/conferences" class="nav-link">Conferences</a>
+          <a href="/history" class="nav-link">History</a>
+        </nav>
+
+        <div class="nav-actions">
+          <button id="themeToggleBtn" class="icon-btn" aria-label="Toggle Theme" title="Toggle Dark/Light Mode">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+          </button>
+          <a href="/settings" class="icon-btn active" aria-label="Settings" title="Settings">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          </a>
+          <a href="/profile" class="icon-btn" aria-label="Profile" title="Profile">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <main class="main-wrapper">
+      <div class="settings-grid">
+        <!-- Scholar Manuscript Preferences -->
+        <section style="background: var(--bg-card); border: 1px solid var(--border-light); border-radius: var(--card-radius); padding: 28px; box-shadow: var(--shadow-sm);">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+            <span style="font-size: 22px;">⚙️</span>
+            <h2 style="font-size: 20px; font-weight: 800; color: var(--text-main); margin: 0;">Scholar Preferences & Workspace</h2>
+          </div>
+          <p style="font-size: 13.5px; color: var(--text-muted); margin-bottom: 20px;">
+            Customize your default academic manuscript style, bibliography format, and visual reading theme.
+          </p>
+
+          <form id="settingsForm" style="display: flex; flex-direction: column; gap: 16px;">
+            <div style="background: var(--bg-card-subtle); padding: 18px; border-radius: 14px; border: 1px solid var(--border-light);">
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                <div>
+                  <label style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Default Manuscript Style</label>
+                  <select id="defaultStyle" class="form-control" style="margin-top: 6px;">
+                    <option value="ieee" {% if settings.default_style == 'ieee' or not settings.default_style %}selected{% endif %}>IEEE Conference / Transactions</option>
+                    <option value="acm" {% if settings.default_style == 'acm' %}selected{% endif %}>ACM sigconf (Computer Science)</option>
+                    <option value="apa7" {% if settings.default_style == 'apa7' %}selected{% endif %}>APA 7th Edition</option>
+                    <option value="nature" {% if settings.default_style == 'nature' %}selected{% endif %}>Nature Publication</option>
+                    <option value="springer_lncs" {% if settings.default_style == 'springer_lncs' %}selected{% endif %}>Springer LNCS</option>
+                    <option value="elsevier" {% if settings.default_style == 'elsevier' %}selected{% endif %}>Elsevier ScienceDirect</option>
+                  </select>
+                </div>
+                <div>
+                  <label style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Visual Workspace Theme</label>
+                  <select id="themeSelect" class="form-control" style="margin-top: 6px;">
+                    <option value="light" {% if settings.theme == 'light' or not settings.theme %}selected{% endif %}>Light Mode (Blush & Warm Accent)</option>
+                    <option value="dark" {% if settings.theme == 'dark' %}selected{% endif %}>Dark Mode (Obsidian & Deep Rose)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <button type="submit" class="btn-pill-primary" style="padding: 10px 24px; font-size: 13px;">
+                Save Preferences
+              </button>
+            </div>
+          </form>
+        </section>
+
+        <!-- Dedicated Scholar Feedback & Suggestions Column / Card -->
+        <section style="background: var(--bg-card); border: 1px solid var(--border-light); border-radius: var(--card-radius); padding: 28px; box-shadow: var(--shadow-sm);">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; flex-wrap: wrap; gap: 8px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 22px;">💬</span>
+              <h2 style="font-size: 20px; font-weight: 800; color: var(--text-main); margin: 0;">Scholar Feedback & Suggestions</h2>
+            </div>
+            <span class="btn-sm" style="font-size: 11px; background: var(--accent-soft); color: var(--accent); font-weight: 800;">Community & Development</span>
+          </div>
+          <p style="font-size: 13.5px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5;">
+            We value your experience and scholarly workflow. Submit your feedback, suggestions, formatting requests, or bug reports directly to improve ResearchMate AI.
+          </p>
+
+          <form id="feedbackForm" style="display: flex; flex-direction: column; gap: 16px;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+              <div>
+                <label style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Category</label>
+                <select id="feedbackCategory" class="form-control" style="margin-top: 6px;">
+                  <option value="Formatting Quality">Paper Formatter & LaTeX Quality</option>
+                  <option value="Notes Maker">Notes Maker & Synthesis Content</option>
+                  <option value="Literature Discovery">Literature Discovery & Papers</option>
+                  <option value="Feature Request">New Feature Request</option>
+                  <option value="Bug Report">Issue or Bug Report</option>
+                  <option value="General Feedback" selected>General Scholar Feedback</option>
+                </select>
+              </div>
+
+              <div>
+                <label style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Experience Rating</label>
+                <div class="rating-stars">
+                  <button type="button" class="star-btn" data-val="1">⭐ 1</button>
+                  <button type="button" class="star-btn" data-val="2">⭐ 2</button>
+                  <button type="button" class="star-btn" data-val="3">⭐ 3</button>
+                  <button type="button" class="star-btn" data-val="4">⭐ 4</button>
+                  <button type="button" class="star-btn active" data-val="5">⭐ 5</button>
+                </div>
+                <input type="hidden" id="feedbackRating" value="5">
+              </div>
+            </div>
+
+            <div>
+              <label style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Subject / Title</label>
+              <input type="text" id="feedbackSubject" class="form-control" placeholder="e.g. Great Notes synthesis, or Add Vancouver citation style..." style="margin-top: 6px;" required>
+            </div>
+
+            <div>
+              <label style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Your Feedback or Suggestion</label>
+              <textarea id="feedbackMessage" class="form-control" rows="4" placeholder="Describe your experience, suggested improvements, or any feature you would love to see..." style="margin-top: 6px; font-size: 13px; line-height: 1.5;" required></textarea>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end;">
+              <button type="submit" id="submitFeedbackBtn" class="btn-pill-primary" style="padding: 10px 24px; font-size: 13px;">
+                Submit Feedback
+              </button>
+            </div>
+          </form>
+
+          <!-- Submitted Feedback Viewer / History Section -->
+          <div style="margin-top: 28px; border-top: 1px solid var(--border-light); padding-top: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+              <div>
+                <h3 style="font-size: 15px; font-weight: 800; color: var(--text-main); margin: 0;">Submitted Scholar Feedback & Logs</h3>
+                <div style="font-size: 11.5px; color: var(--text-muted); margin-top: 2px;">View all community submissions recorded in the database</div>
+              </div>
+              <button type="button" class="btn-sm" onclick="loadFeedbackHistory()" style="font-size: 11px; padding: 4px 10px; background: var(--bg-card-subtle);">🔄 Refresh List</button>
+            </div>
+            <div id="feedbackHistoryContainer" style="display: flex; flex-direction: column; gap: 10px;">
+              <div style="font-size: 12px; color: var(--text-muted); font-style: italic;">Loading submissions...</div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script src="/static/js/main.js"></script>
+  <script>
+    // Save Settings
+    document.getElementById("settingsForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const payload = {
+        default_style: document.getElementById("defaultStyle").value,
+        theme: document.getElementById("themeSelect").value
+      };
+
+      try {
+        await fetch("/api/settings/save", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        showToast("Settings saved successfully!");
+        document.documentElement.setAttribute("data-theme", payload.theme);
+        localStorage.setItem("researchmate_theme", payload.theme);
+      } catch (err) {
+        showToast("Error saving settings", "error");
+      }
+    });
+
+    // Rating star selector
+    document.querySelectorAll(".star-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".star-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        document.getElementById("feedbackRating").value = btn.getAttribute("data-val");
+      });
+    });
+
+    // Submit Feedback
+    document.getElementById("feedbackForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById("submitFeedbackBtn");
+      btn.disabled = true;
+      btn.innerText = "Submitting...";
+
+      const payload = {
+        category: document.getElementById("feedbackCategory").value,
+        subject: document.getElementById("feedbackSubject").value.trim(),
+        rating: parseInt(document.getElementById("feedbackRating").value || "5"),
+        message: document.getElementById("feedbackMessage").value.trim()
+      };
+
+      try {
+        const res = await fetch("/api/feedback", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (data.status === "success") {
+          showToast(data.message || "Feedback submitted successfully!");
+          document.getElementById("feedbackSubject").value = "";
+          document.getElementById("feedbackMessage").value = "";
+          loadFeedbackHistory();
+        } else {
+          showToast(data.detail || "Error submitting feedback", "error");
+        }
+      } catch (err) {
+        showToast("Failed to submit feedback", "error");
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "Submit Feedback";
+      }
+    });
+
+    // Load Feedback History from Backend
+    async function loadFeedbackHistory() {
+      const container = document.getElementById("feedbackHistoryContainer");
+      try {
+        const res = await fetch("/api/feedback");
+        const data = await res.json();
+        if (data.feedback && data.feedback.length > 0) {
+          container.innerHTML = "";
+          data.feedback.forEach(item => {
+            const card = document.createElement("div");
+            card.style = "background: var(--bg-card-subtle); border: 1px solid var(--border-light); border-radius: 10px; padding: 12px 14px;";
+            const stars = "⭐".repeat(Math.max(1, Math.min(5, item.rating || 5)));
+            card.innerHTML = `
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; flex-wrap: wrap; gap: 6px;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span class="btn-sm" style="font-size: 10px; padding: 2px 7px; background: var(--accent-soft); color: var(--accent); font-weight: 800;">${item.category || 'General'}</span>
+                  <span style="font-size: 13px; font-weight: 800; color: var(--text-main);">${item.subject || 'Feedback'}</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span style="font-size: 11px;">${stars}</span>
+                  <span style="font-size: 10.5px; color: var(--text-muted);">${item.created_at || ''}</span>
+                </div>
+              </div>
+              <div style="font-size: 12px; color: var(--text-muted); line-height: 1.45;">${item.message || ''}</div>
+            `;
+            container.appendChild(card);
+          });
+        } else {
+          container.innerHTML = "<div style='font-size: 12px; color: var(--text-muted); font-style: italic;'>No feedback entries recorded yet. Be the first to submit above!</div>";
+        }
+      } catch (e) {
+        container.innerHTML = "<div style='font-size: 12px; color: var(--text-muted);'>Unable to load feedback list.</div>";
+      }
+    }
+
+    // Load feedback on page ready
+    loadFeedbackHistory();
+  </script>
+</body>
+</html>

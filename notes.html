@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notes Maker — ResearchMate AI</title>
+  <link rel="stylesheet" href="/static/css/styles.css">
+  <style>
+    .upload-dropzone {
+      border: 2px dashed var(--border-light);
+      border-radius: 14px;
+      padding: 24px;
+      text-align: center;
+      cursor: pointer;
+      background: var(--bg-card-subtle);
+      transition: all 0.2s ease;
+    }
+    .upload-dropzone:hover {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+    .theory-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: 14px;
+      padding: 24px 28px;
+      margin-bottom: 22px;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .theory-card:hover {
+      box-shadow: var(--shadow-md);
+    }
+    .theory-topic-title {
+      font-size: 19px;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 14px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--border-light);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .theory-section-label {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: var(--accent);
+      margin-top: 14px;
+      margin-bottom: 6px;
+      text-transform: none;
+    }
+    .theory-text-p {
+      font-size: 13.5px;
+      line-height: 1.65;
+      color: var(--text-muted);
+      margin: 0 0 10px 0;
+    }
+    .theory-numbered-list {
+      padding-left: 20px;
+      margin: 6px 0 12px 0;
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--text-muted);
+    }
+    .theory-numbered-list li {
+      margin-bottom: 6px;
+    }
+    .theory-bullet-list {
+      padding-left: 20px;
+      margin: 6px 0 12px 0;
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--text-muted);
+    }
+    .theory-bullet-list li {
+      margin-bottom: 5px;
+    }
+    .pipeline-badge {
+      background: var(--bg-card-subtle);
+      border: 1px solid var(--border-light);
+      border-left: 4px solid var(--c-emerald);
+      padding: 10px 16px;
+      border-radius: 0 8px 8px 0;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin: 8px 0 10px 0;
+      overflow-x: auto;
+      font-family: inherit;
+    }
+    .summary-box {
+      background: var(--bg-card-subtle);
+      border-left: 4px solid var(--accent);
+      padding: 12px 16px;
+      border-radius: 0 8px 8px 0;
+      margin-top: 16px;
+    }
+    .formula-callout {
+      background: var(--bg-card-subtle);
+      border-left: 4px solid var(--c-gold);
+      padding: 10px 14px;
+      border-radius: 0 8px 8px 0;
+      margin: 10px 0;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 13px;
+      color: var(--text-main);
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Top Navigation Bar -->
+    <header class="navbar-top">
+      <div class="nav-container">
+        <a href="/" class="brand-link">
+          <span class="brand-name">ResearchMate</span>
+        </a>
+
+        <nav class="nav-links">
+          <a href="/formatter" class="nav-link">Paper Formatter</a>
+          <a href="/notes" class="nav-link active">Notes Maker</a>
+          <a href="/literature" class="nav-link">Literature Discovery</a>
+          <a href="/ideas" class="nav-link">Idea Lab</a>
+          <a href="/conferences" class="nav-link">Conferences</a>
+          <a href="/history" class="nav-link">History</a>
+        </nav>
+
+        <div class="nav-actions">
+          <button id="themeToggleBtn" class="icon-btn" aria-label="Toggle Theme" title="Toggle Dark/Light Mode">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+          </button>
+          <a href="/settings" class="icon-btn" aria-label="Settings" title="Settings">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          </a>
+          <a href="/profile" class="icon-btn" aria-label="Profile" title="Profile">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="main-wrapper">
+      <!-- Input Section: Uploaded Document Only -->
+      <section style="background: var(--bg-card); border: 1px solid var(--border-light); border-radius: var(--card-radius); padding: 28px; box-shadow: var(--shadow-sm); margin-bottom: 24px;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 18px; flex-wrap: wrap; gap: 12px;">
+          <div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 26px;">📝</span>
+              <h2 style="font-size: 24px; font-weight: 800; color: var(--text-main);">Notes Maker — Descriptive Theory Notes</h2>
+            </div>
+            <p style="font-size: 13.5px; color: var(--text-muted); margin-top: 6px; max-width: 820px; line-height: 1.5;">
+              Upload your research document or paste manuscript text. Notes Maker extracts all topics directly from your uploaded document and synthesizes comprehensive descriptive theory notes with <b>Definitions</b>, <b>Main Layers / Components</b>, <b>Working Pipelines</b>, <b>Applications</b>, <b>Advantages</b>, and <b>Topic Summaries</b>.
+            </p>
+          </div>
+          <button type="button" class="btn-sm" style="background: var(--bg-card-subtle); border: 1px solid var(--border-light); font-weight: 700;" onclick="loadSamplePaperNotes()">
+            ✨ Load Stanford/MIT Sample Document
+          </button>
+        </div>
+
+        <!-- Upload PDF/DOCX or Paste Text Directly -->
+        <div style="display: grid; grid-template-columns: 340px 1fr; gap: 20px; align-items: start;">
+          <!-- File Upload Dropzone -->
+          <div class="upload-dropzone" onclick="document.getElementById('paperFileInput').click()">
+            <input type="file" id="paperFileInput" accept=".pdf,.docx,.tex,.latex,.txt" style="display: none;">
+            <div style="font-size: 34px; margin-bottom: 6px;">📄</div>
+            <div style="font-weight: 800; font-size: 14.5px; color: var(--text-main);" id="uploadNotesText">Upload Document</div>
+            <div style="font-size: 11.5px; color: var(--text-muted); margin-top: 4px;">Supports PDF, Word (.docx), LaTeX (.tex), or TXT</div>
+            <div class="btn-sm btn-sm-primary" style="margin-top: 12px; display: inline-flex; font-size: 11.5px;">Browse Document File</div>
+          </div>
+
+          <!-- Paste Paper / Document Text -->
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <label style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Or Paste Document Content / Manuscript Sections</label>
+            <textarea id="notesInputText" class="form-control" rows="6" placeholder="Paste research manuscript, book chapters, lecture notes, or technical syllabus here... Notes Maker will extract topics and generate descriptive theory notes (Definitions, Main Components, Working, Applications, Advantages & Summary)." style="font-size: 13px; line-height: 1.5;"></textarea>
+            <div style="display: flex; justify-content: flex-end;">
+              <button id="generateNotesBtn" class="btn-pill-primary" style="padding: 10px 24px; font-size: 13px;" onclick="handleGenerateNotes()">
+                ⚡ Generate Theory Notes from Document
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Empty State -->
+      <section id="notesEmptyState" style="background: var(--bg-card); border: 1px solid var(--border-light); border-radius: var(--card-radius); padding: 60px 24px; text-align: center; color: var(--text-muted);">
+        <div style="font-size: 48px; margin-bottom: 12px; opacity: 0.85;">📚</div>
+        <h3 style="font-size: 20px; font-weight: 800; color: var(--text-main); margin-bottom: 6px;">Ready to Synthesize Theory Notes</h3>
+        <p style="font-size: 13.5px; max-width: 520px; margin: 0 auto 20px auto; line-height: 1.5;">
+          Upload a research document above or paste text. The system extracts every topic from your document and produces structured theory notes with definitions, main layers, step-by-step working, practical applications, advantages, and topic summaries.
+        </p>
+      </section>
+
+      <!-- Educational Notes Content Workspace -->
+      <section id="notesWorkspace" style="display: none;">
+        <!-- Top Toolbar & Export Actions -->
+        <div style="background: var(--bg-card); border: 1px solid var(--border-light); border-radius: var(--card-radius); padding: 18px 24px; margin-bottom: 20px; box-shadow: var(--shadow-sm); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
+          <div>
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 4px;">
+              <span class="btn-sm" style="font-size: 11px; padding: 2px 9px; background: var(--accent-soft); color: var(--accent); font-weight: 800;" id="notesDomainBadge">Document Theory Notes</span>
+              <span class="btn-sm" style="font-size: 11px; padding: 2px 8px; background: var(--bg-card-subtle);" id="notesTopicCountBadge">Extracted Topics</span>
+            </div>
+            <h1 id="notesDocTitle" style="font-size: 22px; font-weight: 800; color: var(--text-main); margin: 0;">Document Title</h1>
+          </div>
+
+          <!-- Download Action Buttons -->
+          <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+            <button class="btn-pill-primary" style="padding: 10px 18px; font-size: 13px; display: inline-flex; align-items: center; gap: 6px;" onclick="triggerNotesDownload('pdf')">
+              <span>📥</span> Download PDF (.pdf)
+            </button>
+            <button class="btn-sm" style="padding: 9px 16px; font-size: 12.5px; font-weight: 800; background: var(--bg-card-subtle); border: 1.5px solid var(--border-light); color: var(--text-main);" onclick="triggerNotesDownload('txt')">
+              <span>📄</span> Download Text (.txt)
+            </button>
+            <button class="btn-sm" style="padding: 9px 14px; font-size: 12px; background: var(--bg-card-subtle); border: 1px solid var(--border-light);" onclick="copyNotesToClipboard()">
+              <span>📋</span> Copy Notes
+            </button>
+          </div>
+        </div>
+
+        <!-- Rendered Topics Container (Image 2 style) -->
+        <div id="theoryTopicsContainer"></div>
+
+        <!-- Bottom Action Bar -->
+        <div style="background: var(--bg-card); border: 1px solid var(--border-light); border-radius: var(--card-radius); padding: 20px; margin-top: 24px; text-align: center; display: flex; justify-content: center; gap: 14px; flex-wrap: wrap;">
+          <button class="btn-pill-primary" style="padding: 12px 28px; font-size: 14px; display: inline-flex; align-items: center; gap: 8px;" onclick="triggerNotesDownload('pdf')">
+            <span>📥</span> Download Full Theory Notes PDF (.pdf)
+          </button>
+          <button class="btn-sm" style="padding: 11px 24px; font-size: 13.5px; font-weight: 800; background: var(--bg-card-subtle); border: 1.5px solid var(--border-light); color: var(--text-main);" onclick="triggerNotesDownload('txt')">
+            <span>📄</span> Download Plain Text File (.txt)
+          </button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="/static/js/main.js"></script>
+  <script>
+    let currentNotesData = null;
+
+    // Handle File Upload
+    document.getElementById("paperFileInput").addEventListener("change", async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      document.getElementById("uploadNotesText").innerText = `Reading: ${file.name}...`;
+      showToast(`AI Reading uploaded document: ${file.name}...`);
+
+      const formData = new FormData();
+      formData.append("file", file);
+
+      try {
+        const res = await fetch("/api/notes/upload", {
+          method: "POST",
+          body: formData
+        });
+        const data = await res.json();
+        if (data.notes) {
+          currentNotesData = data.notes;
+          renderTheoryNotes(data.notes);
+          showToast("Descriptive theory notes synthesized from document!");
+        } else {
+          showToast(data.detail || "Error generating notes", "error");
+        }
+      } catch (err) {
+        showToast("Failed to upload manuscript", "error");
+      } finally {
+        document.getElementById("uploadNotesText").innerText = "Upload Document";
+      }
+    });
+
+    // Handle Text Input Generate
+    async function handleGenerateNotes() {
+      const text = document.getElementById("notesInputText").value.trim();
+      if (!text) {
+        showToast("Please enter or paste document manuscript text", "error");
+        return;
+      }
+
+      const btn = document.getElementById("generateNotesBtn");
+      btn.disabled = true;
+      btn.innerText = "Synthesizing Notes...";
+      showToast("Extracting topics and generating descriptive theory notes...");
+
+      try {
+        const res = await fetch("/api/notes/generate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text: text })
+        });
+        const data = await res.json();
+        if (data.notes) {
+          currentNotesData = data.notes;
+          renderTheoryNotes(data.notes);
+          showToast("Theory notes created successfully!");
+        } else {
+          showToast(data.detail || "Error generating notes", "error");
+        }
+      } catch (err) {
+        showToast("Failed to generate notes", "error");
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "⚡ Generate Theory Notes from Document";
+      }
+    }
+
+    // Render Descriptive Theory Notes Matching Image 2
+    function renderTheoryNotes(notes) {
+      document.getElementById("notesEmptyState").style.display = "none";
+      document.getElementById("notesWorkspace").style.display = "block";
+
+      document.getElementById("notesDocTitle").innerText = notes.title || "Uploaded Document Theory Notes";
+      const topics = notes.topics || notes.section_notes || [];
+      document.getElementById("notesTopicCountBadge").innerText = `${topics.length} Document Topics`;
+
+      const container = document.getElementById("theoryTopicsContainer");
+      container.innerHTML = "";
+
+      topics.forEach((t, idx) => {
+        const card = document.createElement("article");
+        card.className = "theory-card";
+
+        const titleText = t.topic_title || t.title || `Topic ${idx + 1}`;
+        const defText = t.definition || t.description || "";
+
+        let html = `
+          <div class="theory-topic-title">
+            <span>📌</span>
+            <span>${titleText}</span>
+          </div>
+
+          <!-- Definition -->
+          <div style="margin-bottom: 12px;">
+            <div class="theory-section-label">Definition:</div>
+            <p class="theory-text-p">${defText}</p>
+          </div>
+        `;
+
+        // Main Components / Layers
+        if (t.main_components && t.main_components.length > 0) {
+          html += `
+            <div class="theory-section-label">Main Layers / Key Components of ${titleText}:</div>
+            <ol class="theory-numbered-list">
+          `;
+          t.main_components.forEach(comp => {
+            html += `<li><b>${comp.name}:</b> ${comp.explanation}</li>`;
+          });
+          html += `</ol>`;
+        }
+
+        // Working
+        if (t.working_flow) {
+          html += `
+            <div class="theory-section-label">Working of ${titleText}:</div>
+            <div class="pipeline-badge">${t.working_flow}</div>
+          `;
+          if (t.working_description) {
+            html += `<p class="theory-text-p" style="margin-top: 4px;">${t.working_description}</p>`;
+          }
+        }
+
+        // Applications
+        if (t.applications && t.applications.length > 0) {
+          html += `
+            <div class="theory-section-label">Applications:</div>
+            <ul class="theory-bullet-list">
+          `;
+          t.applications.forEach(app => {
+            html += `<li>${app}</li>`;
+          });
+          html += `</ul>`;
+        }
+
+        // Advantages
+        if (t.advantages && t.advantages.length > 0) {
+          html += `
+            <div class="theory-section-label">Advantages:</div>
+            <ul class="theory-bullet-list">
+          `;
+          t.advantages.forEach(adv => {
+            html += `<li>${adv}</li>`;
+          });
+          html += `</ul>`;
+        }
+
+        // Formula if present
+        if (t.formula) {
+          html += `
+            <div class="theory-section-label">Mathematical Principle:</div>
+            <div class="formula-callout">${t.formula}</div>
+          `;
+        }
+
+        // Summary of Topic
+        if (t.summary || t.educational_insight) {
+          const sumText = t.summary || t.educational_insight;
+          html += `
+            <div class="summary-box">
+              <b style="font-size: 13px; color: var(--text-main);">Summary of Topic:</b>
+              <p style="font-size: 13px; line-height: 1.5; color: var(--text-muted); margin: 4px 0 0 0;">${sumText}</p>
+            </div>
+          `;
+        }
+
+        card.innerHTML = html;
+        container.appendChild(card);
+      });
+
+      // Smooth scroll into workspace
+      document.getElementById("notesWorkspace").scrollIntoView({ behavior: "smooth" });
+    }
+
+    // Trigger Download (PDF or TXT)
+    async function triggerNotesDownload(format = "pdf") {
+      if (!currentNotesData) {
+        showToast("No notes data to export", "error");
+        return;
+      }
+
+      showToast(`Generating ${format.toUpperCase()} theory notes...`);
+      try {
+        const res = await fetch("/api/notes/export", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            format: format,
+            notes: currentNotesData
+          })
+        });
+        const data = await res.json();
+        if (data.download_url) {
+          window.location.href = data.download_url;
+          showToast(`Downloaded ${format.toUpperCase()} theory notes!`);
+        } else {
+          showToast("Export error", "error");
+        }
+      } catch (err) {
+        showToast("Failed to download notes", "error");
+      }
+    }
+
+    // Copy Notes to Clipboard matching Image 2 format
+    function copyNotesToClipboard() {
+      if (!currentNotesData) return;
+      let text = `RESEARCHMATE AI — THEORY NOTES GENERATION\nDocument: ${currentNotesData.title}\n\n`;
+      const topics = currentNotesData.topics || currentNotesData.section_notes || [];
+
+      topics.forEach(t => {
+        const titleText = t.topic_title || t.title || "Topic";
+        text += `${titleText}\n\n`;
+        text += `Definition: ${t.definition || t.description || ''}\n\n`;
+
+        if (t.main_components && t.main_components.length > 0) {
+          text += `Main Layers / Key Components of ${titleText}:\n`;
+          t.main_components.forEach(comp => {
+            text += `  ${comp.number || 1}. ${comp.name}: ${comp.explanation}\n`;
+          });
+          text += "\n";
+        }
+
+        if (t.working_flow) {
+          text += `Working of ${titleText}:\n`;
+          text += `  ${t.working_flow}\n`;
+          if (t.working_description) text += `  ${t.working_description}\n`;
+          text += "\n";
+        }
+
+        if (t.applications && t.applications.length > 0) {
+          text += "Applications:\n";
+          t.applications.forEach(app => text += `  * ${app}\n`);
+          text += "\n";
+        }
+
+        if (t.advantages && t.advantages.length > 0) {
+          text += "Advantages:\n";
+          t.advantages.forEach(adv => text += `  * ${adv}\n`);
+          text += "\n";
+        }
+
+        if (t.formula) {
+          text += `Mathematical Principle:\n  ${t.formula}\n\n`;
+        }
+
+        if (t.summary || t.educational_insight) {
+          text += `Summary of Topic:\n  ${t.summary || t.educational_insight}\n\n`;
+        }
+        text += "--------------------------------------------------------------------------------\n\n";
+      });
+
+      navigator.clipboard.writeText(text).then(() => {
+        showToast("Descriptive theory notes copied to clipboard!");
+      }).catch(() => {
+        showToast("Could not copy to clipboard", "error");
+      });
+    }
+
+    // Load Sample Paper Notes
+    async function loadSamplePaperNotes() {
+      showToast("Loading Stanford/MIT sample paper into Notes Maker...");
+      try {
+        const res = await fetch("/api/formatter/sample");
+        const data = await res.json();
+        if (data.paper) {
+          const sampleText = `${data.paper.title}\n\nAbstract\n${data.paper.abstract}\n\n` + 
+            data.paper.sections.map(s => `${s.heading}\n${s.content}`).join("\n\n");
+          document.getElementById("notesInputText").value = sampleText;
+          handleGenerateNotes();
+        }
+      } catch (err) {
+        showToast("Failed to load sample document", "error");
+      }
+    }
+  </script>
+</body>
+</html>
