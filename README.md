@@ -1,7 +1,7 @@
 # ResearchMate AI — Academic Research & Publication Suite
 
 ## 🌐 Live Website
-- **Website URL**: `[INSERT_WEBSITE_URL_HERE]` *(Paste your deployed website link here)*
+- **Website URL**: https://researchmate-ai-scyd.onrender.com/
 
 ---
 
